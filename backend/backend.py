@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
-import urllib.request
+import requests
+
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
@@ -11,26 +12,27 @@ from io import BytesIO
 app = Flask(__name__)
 CORS(app)
 
-# Config
-IMG_HEIGHT = 150
-IMG_WIDTH = 150
-CLASS_NAMES = ["Organic", "Recyclable", "Plastic"]
-
 # Model setup
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 MODEL_PATH = os.path.join(MODEL_DIR, "waste_classification_model.h5")
-MODEL_URL = "https://your-cloud-storage-link.com/waste_classification_model.h5"  # Replace with actual link
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1mtsvwzWIwbdbYYWJ4KOCTkWx_lfQfKyM"
 
-# Auto-download model if missing
+# Download the model if it doesn't exist
 if not os.path.exists(MODEL_PATH):
     os.makedirs(MODEL_DIR, exist_ok=True)
-    print("📥 Downloading model...")
-    urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-    print("✅ Model downloaded.")
+    print("📥 Downloading model from Google Drive...")
+    response = requests.get(MODEL_URL)
+    with open(MODEL_PATH, 'wb') as f:
+        f.write(response.content)
+    print("✅ Model downloaded!")
 
 # Load model
 model = load_model(MODEL_PATH)
-print("✅ Model loaded.")
+
+# Constants
+IMG_HEIGHT = 150
+IMG_WIDTH = 150
+CLASS_NAMES = ["Organic", "Recyclable", "Plastic"]
 
 @app.route('/')
 def home():
@@ -39,7 +41,6 @@ def home():
 @app.route('/classify', methods=['POST'])
 def classify_image():
     try:
-        print("📥 Request received")
         if 'image' not in request.files:
             return jsonify({"error": "No image file provided"}), 400
 
@@ -51,16 +52,13 @@ def classify_image():
         predictions = model.predict(img_array)
         predicted_class_index = np.argmax(predictions, axis=1)[0]
         confidence = float(predictions[0][predicted_class_index])
-
         result = {
             "class": CLASS_NAMES[predicted_class_index],
             "confidence": round(confidence, 2)
         }
-
         return jsonify(result), 200
 
     except Exception as e:
-        print("❌ Error:", str(e))
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
