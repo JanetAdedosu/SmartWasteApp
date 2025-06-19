@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
 
-EXPOSE 5001
+EXPOSE 5002
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "backend:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5002", "backend:app"]
