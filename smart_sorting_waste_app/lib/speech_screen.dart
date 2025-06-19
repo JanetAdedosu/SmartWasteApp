@@ -5,15 +5,19 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 class SpeechScreen extends StatelessWidget {
   final List<CameraDescription> cameras;
 
-  late stt.SpeechToText _speech;
+   
 
 
   const SpeechScreen({Key? key required this.cameras}) : super(key: key);
   @override
   _SpeechScreenState createState() => _SpeechScreenState();
-}
+  }
 
  class _SpeechScreenState extends State<SpeechScreen> {
+  late CameraController _cameraController;
+  late stt.SpeechToText _speech;
+
+  bool _isCameraInitialized = false;
   bool _isListening = false;
   bool _isProcessingImage = false;
   String _speechText = '';
@@ -30,23 +34,19 @@ void initState() {
   late CameraController _cameraController;
 bool _isCameraInitialized = false;
 
-@override
-void initState() {
-  super.initState();
-  _initializeCamera();
-}
+
 
 @override
 void dispose() {
   _cameraController.dispose();
+  _speech.stop();
   super.dispose();
 }
 
 Future<void> _initializeCamera() async {
   if (widget.cameras.isEmpty) return;
 
-  _cameraController = CameraController(
-    widget.cameras[0],
+  _cameraController = CameraController(widget.cameras[0],
     ResolutionPreset.medium,
   );
   try {
@@ -67,7 +67,7 @@ void _startListening() async {
     _speech.listen(
   onResult: (val) {
     setState(() => _speechText = val.recognizedWords);
-    if (val.recognizedWords.toLowerCase().contains("classify")) {
+    if (val.recognizedWords.toLowerCase().contains("classify","sort this waste")) {
       _takePictureAndClassify();
     }
   },
@@ -84,8 +84,7 @@ void _stopListening() {
   setState(() => _isListening = false);
 }
 
-bool _isProcessingImage = false;
-String? _classificationResult;
+
 
 Future<void> _takePictureAndClassify() async {
   if (!_isCameraInitialized || _isProcessingImage) return;
@@ -98,7 +97,7 @@ Future<void> _takePictureAndClassify() async {
   try {
     final imageFile = await _cameraController.takePicture();
     // Placeholder result:
-    final result = '📦 Detected: Plastic Bottle'; // Replace with real model later
+    final result = await _modelInference.runModelOnImage(imageFile.path);
     setState(() {
       _classificationResult = result;
       _isProcessingImage = false;
