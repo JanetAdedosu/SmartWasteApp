@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'speech_screen.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -17,9 +18,8 @@ class SmartWasteApp extends StatelessWidget {
       title: 'Smart Waste App',
       theme: ThemeData(primarySwatch: Colors.green),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(child: Text('Hello World')),
-      ),
+      home: SpeechScreen(cameras: cameras),
+      
     );
   }
 }
