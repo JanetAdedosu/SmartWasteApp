@@ -93,6 +93,11 @@ void _stopListening() {
         )
        : const CircularProgressIndicator(),
      ),
+     Text(
+      _speechText.isEmpty ? 'Say something...' : _speechText,
+      style: const TextStyle(fontSize: 20),
+),
+
       
     );
   }
