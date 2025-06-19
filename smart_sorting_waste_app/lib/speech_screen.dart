@@ -97,6 +97,11 @@ void _stopListening() {
       _speechText.isEmpty ? 'Say something...' : _speechText,
       style: const TextStyle(fontSize: 20),
 ),
+FloatingActionButton(
+  onPressed: _isListening ? _stopListening : _startListening,
+  child: Icon(_isListening ? Icons.mic : Icons.mic_none),
+),
+
 
       
     );
