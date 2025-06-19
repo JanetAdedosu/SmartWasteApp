@@ -15,7 +15,9 @@ class SpeechScreen extends StatelessWidget {
 
  class _SpeechScreenState extends State<SpeechScreen> {
   bool _isListening = false;
-String _speechText = '';
+  bool _isProcessingImage = false;
+  String _speechText = '';
+  String? _classificationResult;
 
   @override
 void initState() {
@@ -81,6 +83,35 @@ void _stopListening() {
   _speech.stop();
   setState(() => _isListening = false);
 }
+
+bool _isProcessingImage = false;
+String? _classificationResult;
+
+Future<void> _takePictureAndClassify() async {
+  if (!_isCameraInitialized || _isProcessingImage) return;
+
+  setState(() {
+    _isProcessingImage = true;
+    _classificationResult = null;
+  });
+
+  try {
+    final imageFile = await _cameraController.takePicture();
+    // Placeholder result:
+    final result = '📦 Detected: Plastic Bottle'; // Replace with real model later
+    setState(() {
+      _classificationResult = result;
+      _isProcessingImage = false;
+    });
+  } catch (e) {
+    print('Error: $e');
+    setState(() {
+      _classificationResult = '❌ Classification failed';
+      _isProcessingImage = false;
+    });
+  }
+}
+
 
 
 
