@@ -120,37 +120,65 @@ Future<void> _takePictureAndClassify() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Smart Waste App')),
-        body: SingleChildScrollView(
-  padding: const EdgeInsets.all(12),
-  child: Column(
-    children: [
-      if (_isCameraInitialized && _cameraController.value.isInitialized)
-        AspectRatio(
-          aspectRatio: _cameraController.value.aspectRatio,
-          child: CameraPreview(_cameraController),
-        )
-      else
-        const CircularProgressIndicator(),
+       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            if (_isCameraInitialized && _cameraController.value.isInitialized)
+              AspectRatio(
+                aspectRatio: _cameraController.value.aspectRatio,
+                child: CameraPreview(_cameraController),
+              )
+            else
+              const CircularProgressIndicator(),
 
-      const SizedBox(height: 20),
-      Text(
-        _speechText.isEmpty ? 'Say something...' : _speechText,
-        style: const TextStyle(fontSize: 20),
+            const SizedBox(height: 20),
+            Text(
+              _speechText.isEmpty ? 'Say something...' : _speechText,
+              style: const TextStyle(fontSize: 20),
+            ),
+
+            const SizedBox(height: 20),
+            if (_isProcessingImage)
+              const CircularProgressIndicator()
+            else if (_classificationResult != null)
+              Text(
+                _classificationResult!,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+
+            const SizedBox(height: 30),
+            // *** Added padding and container background here ***
+            Container(  // ***
+              padding: const EdgeInsets.symmetric(vertical: 10),  // ***
+              color: Colors.grey[200],  // *** Light background so buttons are visible
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                    heroTag: 'micButton',
+                    onPressed: _isListening ? _stopListening : _startListening,
+                    backgroundColor: Colors.red,  // *** added background color ***
+                    child: Icon(
+                      _isListening ? Icons.mic : Icons.mic_none,
+                      color: Colors.white,  // *** icon color for contrast ***
+                    ),
+                  ),
+                  const SizedBox(width: 30),
+                  FloatingActionButton(
+                    heroTag: 'cameraButton',
+                    onPressed: _takePictureAndClassify,
+                    backgroundColor: Colors.blue,  // *** added background color ***
+                    child: const Icon(Icons.camera_alt, color: Colors.white),  // *** icon color ***
+                  ),
+                ],
+              ),
+            ),  // ***
+          ],
+        ),
       ),
-
-      const SizedBox(height: 30),
-      FloatingActionButton(
-        onPressed: _isListening ? _stopListening : _startListening,
-        child: Icon(_isListening ? Icons.mic : Icons.mic_none),
-      ),
-    ],
-  ),
-),
-
-
-
-);
-
+    );
+  }
 }
 
-}
+
