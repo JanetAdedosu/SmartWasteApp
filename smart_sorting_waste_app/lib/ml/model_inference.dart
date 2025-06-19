@@ -15,20 +15,30 @@ class ModelInference {
       request.files.add(await http.MultipartFile.fromPath('image', imagePath));
 
       final streamedResponse = await request.send().timeout(const Duration(seconds: 10));
+      final responseBody = await streamedResponse.stream.bytesToString();
 
-    } on SocketException {
-      return '❌ Network error.';
+      if (streamedResponse.statusCode == 200) {
+      final json = jsonDecode(responseBody);
+      final label = json['class'];
+      final confidence = (json['confidence'] as num).toDouble() * 100;
+
+      final bin = _germanBin(label);
+      return "$label (${confidence.toStringAsFixed(2)}%) ➜ Bin: $bin";
+      } else {
+      return '❌ Server error ${streamedResponse.statusCode}';
+      }
+     } on SocketException {
+     return '❌ Network error.';
     } on TimeoutException {
-      return '❌ Request timed out.';
-    } on FormatException {
-      return '❌ Invalid response.';
-
-
-      
-
-    } catch (e) {
-      return '❌ Unexpected error: $e';
-    }
+   return '❌ Request timed out.';
+   } on FormatException {
+  return '❌ Invalid response.';
+  } catch (e) {
+  return '❌ Unexpected error: $e';
   }
+}
+
+
+    
 
 }
