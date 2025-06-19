@@ -34,10 +34,6 @@ void initState() {
 }
 
 
-  
-
-
-
 @override
 void dispose() {
   _cameraController.dispose();
@@ -72,7 +68,7 @@ void _startListening() async {
     setState(() => _speechText = val.recognizedWords);
     if (val.recognizedWords.toLowerCase().contains("classify") || 
     val.recognizedWords.toLowerCase().contains("sort this waste")) {
- {
+
       _takePictureAndClassify();
     
   }
