@@ -9,12 +9,16 @@ class SmartWasteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Smart Waste App',
+      theme: ThemeData(primarySwatch: Colors.green),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(child: Text('Hello World')),
       ),
     );
   }
 }
+
+
 
 
 
