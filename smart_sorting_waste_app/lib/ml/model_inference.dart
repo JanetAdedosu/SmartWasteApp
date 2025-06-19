@@ -37,6 +37,22 @@ class ModelInference {
   return '❌ Unexpected error: $e';
   }
 }
+String _germanBin(String label) {
+  switch (label.toLowerCase()) {
+    case 'organic':
+      return 'Biotonne (Brown/Green)';
+    case 'plastic':
+    case 'recyclable':
+      return 'Gelbe Tonne (Yellow)';
+    case 'paper':
+      return 'Blaue Tonne (Blue)';
+    case 'glass':
+      return 'Altglascontainer';
+    default:
+      return 'Restmüll (Black)';
+  }
+}
+
 
 
     
