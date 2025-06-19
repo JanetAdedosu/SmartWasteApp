@@ -1,26 +1,20 @@
-# Use an official Python 3.10 base image (TensorFlow 2.12 supports <=3.10)
+# Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Set the working directory
-WORKDIR /app
+# Set working directory in the container
+WORKDIR /app/backend
 
-# Copy everything into the container
-COPY . .
+# Copy backend folder contents into the container
+COPY backend/ /app/backend/
 
-# Install system dependencies (for image processing + TF)
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Python dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# Set environment variable to tell Flask to run in production
-ENV FLASK_ENV=production
-
-# Expose port 5001
+# Expose the port your Flask app will run on
 EXPOSE 5001
 
-# Run the Flask app
-CMD ["python", "backend/backend.py"]
+# Set environment variables to avoid Python buffering output
+ENV PYTHONUNBUFFERED=1
+
+# Command to run your Flask app
+CMD ["python", "backend.py"]
