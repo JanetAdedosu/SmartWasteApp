@@ -14,6 +14,9 @@ class SpeechScreen extends StatelessWidget {
 }
 
  class _SpeechScreenState extends State<SpeechScreen> {
+  bool _isListening = false;
+String _speechText = '';
+
   @override
 void initState() {
   super.initState();
@@ -51,6 +54,8 @@ Future<void> _initializeCamera() async {
     print("Camera error: $e");
   }
 }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
