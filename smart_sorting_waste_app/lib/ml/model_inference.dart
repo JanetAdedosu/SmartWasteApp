@@ -14,19 +14,21 @@ class ModelInference {
       var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
       request.files.add(await http.MultipartFile.fromPath('image', imagePath));
 
-      final streamedResponse = await request.send();
-      final responseBody = await streamedResponse.stream.bytesToString();
+      final streamedResponse = await request.send().timeout(const Duration(seconds: 10));
 
-      if (streamedResponse.statusCode == 200) {
-        final json = jsonDecode(responseBody);
-        return json['class']; // basic response
-      } else {
-        return '❌ Server error ${streamedResponse.statusCode}';
-      }
+    } on SocketException {
+      return '❌ Network error.';
+    } on TimeoutException {
+      return '❌ Request timed out.';
+    } on FormatException {
+      return '❌ Invalid response.';
+
+
+      
 
     } catch (e) {
       return '❌ Unexpected error: $e';
     }
   }
-  
+
 }
