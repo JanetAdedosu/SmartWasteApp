@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SpeechScreen extends StatelessWidget {
   final List<CameraDescription> cameras;
+
+  late stt.SpeechToText _speech;
 
 
   const SpeechScreen({Key? key required this.cameras}) : super(key: key);
@@ -11,6 +14,14 @@ class SpeechScreen extends StatelessWidget {
 }
 
  class _SpeechScreenState extends State<SpeechScreen> {
+  @override
+void initState() {
+  super.initState();
+  _speech = stt.SpeechToText();
+  _initializeCamera();
+}
+
+
   late CameraController _cameraController;
 bool _isCameraInitialized = false;
 
