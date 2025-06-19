@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'ml/model_inference.dart';
 
 class SpeechScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -16,6 +17,7 @@ class SpeechScreen extends StatefulWidget {
  class _SpeechScreenState extends State<SpeechScreen> {
   late CameraController _cameraController;
   late stt.SpeechToText _speech;
+  late ModelInference _modelInference;
 
   bool _isCameraInitialized = false;
   bool _isListening = false;
@@ -27,6 +29,7 @@ class SpeechScreen extends StatefulWidget {
 void initState() {
   super.initState();
   _speech = stt.SpeechToText();
+  _modelInference = ModelInference();
   _initializeCamera();
 }
 
@@ -39,6 +42,7 @@ void initState() {
 void dispose() {
   _cameraController.dispose();
   _speech.stop();
+  _modelInference.close();
   super.dispose();
 }
 
@@ -72,6 +76,7 @@ void _startListening() async {
       _takePictureAndClassify();
     
   }
+  },
 );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
