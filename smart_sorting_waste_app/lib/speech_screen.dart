@@ -63,10 +63,13 @@ void _startListening() async {
   if (available) {
     setState(() => _isListening = true);
     _speech.listen(
-      onResult: (val) {
-        setState(() => _speechText = val.recognizedWords);
-      },
-    );
+  onResult: (val) {
+    setState(() => _speechText = val.recognizedWords);
+    if (val.recognizedWords.toLowerCase().contains("classify")) {
+      _takePictureAndClassify();
+    }
+  },
+);
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Speech recognition unavailable')),
