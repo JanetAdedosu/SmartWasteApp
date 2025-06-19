@@ -26,6 +26,7 @@ datagen = ImageDataGenerator(
     validation_split=0.2
 )
 
+
 # Training and validation data generators
 train_generator = datagen.flow_from_directory(
     train_dir,
@@ -42,6 +43,8 @@ val_generator = datagen.flow_from_directory(
     class_mode="categorical",
     subset="validation"
 )
+
+#print("Class indices:", train_generator.class_indices)
 
 # Define the CNN model
 model = models.Sequential([
@@ -72,7 +75,7 @@ os.makedirs("models", exist_ok=True)
 # Callbacks
 callbacks = [
     EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True),
-    ModelCheckpoint('models/best_model.h5', save_best_only=True, monitor='val_loss')
+    ModelCheckpoint('models/waste_classification_model.h5', save_best_only=True, monitor='val_loss')
 ]
 
 # Train the model
