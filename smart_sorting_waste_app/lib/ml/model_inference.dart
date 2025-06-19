@@ -53,8 +53,7 @@ String _germanBin(String label) {
   }
 }
 
-
-
-    
-
+void close() {
+  // No resources to release
+}
 }
