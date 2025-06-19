@@ -5,7 +5,7 @@ class SpeechScreen extends StatelessWidget {
   final List<CameraDescription> cameras;
 
 
-  const SpeechScreen({Key? key}) : super(key: key);
+  const SpeechScreen({Key? key required this.cameras}) : super(key: key);
   @override
   _SpeechScreenState createState() => _SpeechScreenState();
 }
@@ -40,17 +40,19 @@ Future<void> _initializeCamera() async {
     print("Camera error: $e");
   }
 }
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Smart Waste App')),
-      body: const Center(
-        child: Text('Initializing...'),
-      ),
+        body: Center(
+  child: _isCameraInitialized
+      ? AspectRatio(
+          aspectRatio: _cameraController.value.aspectRatio,
+          child: CameraPreview(_cameraController),
+        )
+       : const CircularProgressIndicator(),
+     ),
+      
     );
   }
 }
