@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-class SpeechScreen extends StatelessWidget {
+class SpeechScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
 
    
 
 
-  const SpeechScreen({Key? key required this.cameras}) : super(key: key);
+  const SpeechScreen({Key? key,  required this.cameras}) : super(key: key);
   @override
   _SpeechScreenState createState() => _SpeechScreenState();
   }
@@ -31,8 +31,7 @@ void initState() {
 }
 
 
-  late CameraController _cameraController;
-bool _isCameraInitialized = false;
+  
 
 
 
@@ -67,10 +66,12 @@ void _startListening() async {
     _speech.listen(
   onResult: (val) {
     setState(() => _speechText = val.recognizedWords);
-    if (val.recognizedWords.toLowerCase().contains("classify","sort this waste")) {
+    if (val.recognizedWords.toLowerCase().contains("classify") || 
+    val.recognizedWords.toLowerCase().contains("sort this waste")) {
+ {
       _takePictureAndClassify();
-    }
-  },
+    
+  }
 );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -118,28 +119,37 @@ Future<void> _takePictureAndClassify() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Smart Waste App')),
-        body: Center(
-  child: _isCameraInitialized
-      ? AspectRatio(
+        body: SingleChildScrollView(
+  padding: const EdgeInsets.all(12),
+  child: Column(
+    children: [
+      if (_isCameraInitialized && _cameraController.value.isInitialized)
+        AspectRatio(
           aspectRatio: _cameraController.value.aspectRatio,
           child: CameraPreview(_cameraController),
         )
-       : const CircularProgressIndicator(),
-     ),
-     Text(
-      _speechText.isEmpty ? 'Say something...' : _speechText,
-      style: const TextStyle(fontSize: 20),
-),
-FloatingActionButton(
-  onPressed: _isListening ? _stopListening : _startListening,
-  child: Icon(_isListening ? Icons.mic : Icons.mic_none),
+      else
+        const CircularProgressIndicator(),
+
+      const SizedBox(height: 20),
+      Text(
+        _speechText.isEmpty ? 'Say something...' : _speechText,
+        style: const TextStyle(fontSize: 20),
+      ),
+
+      const SizedBox(height: 30),
+      FloatingActionButton(
+        onPressed: _isListening ? _stopListening : _startListening,
+        child: Icon(_isListening ? Icons.mic : Icons.mic_none),
+      ),
+    ],
+  ),
 ),
 
 
-      
-    );
-  }
+
+);
+
 }
 
-
-
+}
