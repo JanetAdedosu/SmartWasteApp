@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 
 class ModelInference {
-  final String apiUrl = 'http://172.20.10.6:5001/classify';
+  final String apiUrl = 'http://192.168.178.22:5001/classify';
 
   Future<String> runModelOnImage(String imagePath) async {
     try {
