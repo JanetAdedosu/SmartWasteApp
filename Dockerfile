@@ -19,8 +19,8 @@ RUN pip install -r requirements.txt
 # Set environment variable to tell Flask to run in production
 ENV FLASK_ENV=production
 
-# Expose port 5000
-EXPOSE 5000
+# Expose port 5001
+EXPOSE 5001
 
 # Run the Flask app
 CMD ["python", "backend/backend.py"]
