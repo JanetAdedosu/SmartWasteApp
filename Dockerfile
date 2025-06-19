@@ -1,20 +1,17 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Set working directory in the container
-WORKDIR /app/backend
+# Set working directory inside the container
+WORKDIR /app
 
-# Copy backend folder contents into the container
-COPY backend/ /app/backend/
+# Copy the backend folder (which includes your code and requirements.txt)
+COPY backend/ ./backend/
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies using the requirements.txt inside backend
+RUN pip install --no-cache-dir -r backend/requirements.txt
 
-# Expose the port your Flask app will run on
+# Expose the port your Flask app runs on (update this if you use a different port)
 EXPOSE 5001
 
-# Set environment variables to avoid Python buffering output
-ENV PYTHONUNBUFFERED=1
-
-# Command to run your Flask app
-CMD ["python", "backend.py"]
+# Run the Flask app
+CMD ["python", "backend/backend.py"]
