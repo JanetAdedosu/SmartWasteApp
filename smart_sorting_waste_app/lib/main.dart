@@ -4,7 +4,9 @@ import 'package:camera/camera.dart';
 List<CameraDescription> cameras = [];
 
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(SmartWasteApp());
 }
 
