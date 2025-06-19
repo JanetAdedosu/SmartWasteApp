@@ -9,7 +9,7 @@ interpreter = tf.lite.Interpreter(model_path="/Users/janetadedosu/Desktop/Smart_
 interpreter.allocate_tensors()
 
 # Preprocess the image
-img = Image.open('dataset/DATASET/TEST/Organic/O_12568.jpg').resize((150, 150))
+img = Image.open('dataset/DATASET/TRAIN/Plastic/R_1.jpg').resize((150, 150))
 img_array = np.expand_dims(np.array(img) / 255.0, axis=0).astype(np.float32)  # Normalize and ensure FLOAT32
 
 # Get input and output details
@@ -26,7 +26,8 @@ predicted_index = np.argmax(interpreter.get_tensor(output_details[0]['index']))
 class_labels = {
     0: "Organic",
     1: "Recyclable",
-    2: "Non-Recyclable"
+    2: "Non-Recyclable",
+    3:"Plastic"
 }
 
 # Output the full class name
