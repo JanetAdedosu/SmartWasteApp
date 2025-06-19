@@ -54,6 +54,31 @@ Future<void> _initializeCamera() async {
     print("Camera error: $e");
   }
 }
+void _startListening() async {
+  bool available = await _speech.initialize(
+    onStatus: (val) => print('Speech status: $val'),
+    onError: (val) => print('Speech error: $val'),
+  );
+
+  if (available) {
+    setState(() => _isListening = true);
+    _speech.listen(
+      onResult: (val) {
+        setState(() => _speechText = val.recognizedWords);
+      },
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Speech recognition unavailable')),
+    );
+  }
+}
+
+void _stopListening() {
+  _speech.stop();
+  setState(() => _isListening = false);
+}
+
 
 
   @override
