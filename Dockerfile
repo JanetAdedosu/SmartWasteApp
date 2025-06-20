@@ -1,21 +1,23 @@
-FROM python:3.9-buster
+# Use a slim version of Python 3.9
+FROM python:3.9-slim
 
-
-
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy only the model file explicitly
-#COPY backend/models/waste_classification_model.h5 ./backend/models/waste_classification_model.h5
+# Copy all backend files into the container
+COPY backend/ ./backend/
 
-# Copy backend.py to /app for testing (optional)
-COPY backend/backend.py ./backend.py
+# Install system-level dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Flask and tensorflow just to avoid runtime errors
+# Upgrade pip and install required Python packages
 RUN pip install --upgrade pip
-RUN pip install flask tensorflow
+RUN pip install flask flask-cors gunicorn tensorflow-cpu
 
-# Expose port for flask app (optional)
+# Expose the port the app will run on
 EXPOSE 5003
 
-# For testing: list the model file then run flask app
-CMD ls -l /app/backend/models/ && python backend.py
+# Start the app using Gunicorn on port 5003
+CMD ["gunicorn", "backend.backend:app", "-b", "0.0.0.0:5003"]
