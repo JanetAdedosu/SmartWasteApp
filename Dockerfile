@@ -13,4 +13,4 @@ COPY backend/ .
 
 EXPOSE 5003
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5002", "backend:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5003", "backend:app"]
