@@ -23,7 +23,10 @@ except ImportError:
     pillow_installed = False
 
 # Load TFLite model
-MODEL_PATH = "model.tflite"
+#MODEL_PATH = "model.tflite"
+    
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model.tflite")
 
 
 
