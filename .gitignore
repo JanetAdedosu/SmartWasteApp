@@ -1,26 +1,18 @@
-# Flutter
-build/
-.dart_tool/
-.packages
-pubspec.lock
+# Python virtual environments
+venv/
+env/
+testenv/
 
-# iOS/Android
-ios/Pods/
-android/.gradle/
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.so
 
-# VS Code
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode settings
 .vscode/
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-venv/
-
-# Large files to ignore
-*.h5
-*.zip
-*.tar.gz
-backend/archive.zip
-backend/models/
+# macOS system files
+.DS_Store

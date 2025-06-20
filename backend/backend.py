@@ -13,6 +13,8 @@ CORS(app)
 
 logging.basicConfig(level=logging.INFO)
 
+#ignore
+
 # Check if Pillow is installed (this will always be True if this script runs successfully)
 try:
     from PIL import Image
@@ -21,7 +23,8 @@ except ImportError:
     pillow_installed = False
 
 # Load TFLite model
-MODEL_PATH = "backend/model.tflite"
+MODEL_PATH = "model.tflite"
+
 
 
 logging.info(f"Starting model load check...")
@@ -46,6 +49,11 @@ except Exception as e:
     load_error = str(e) + "\n" + traceback.format_exc()
     logging.error(f"Failed to load TFLite model:\n{load_error}")
 
+
+@app.route('/')
+def home():
+    return "Smart Waste Backend is running! ✅"
+
 # Health check endpoint
 @app.route('/health', methods=['GET'])
 def health():
@@ -57,17 +65,10 @@ def health():
 # Classify endpoint
 @app.route('/classify', methods=['POST'])
 def classify():
-    if not model_loaded:
-        return jsonify({"error": "Model not loaded"}), 500
-
-    if 'image' not in request.files:
-        return jsonify({"error": "No image provided"}), 400
-
-    file = request.files['image']
-    if file.filename == '':
-        return jsonify({"error": "Empty filename"}), 400
-
     try:
+        # Get file from request
+        file = request.files['file']
+        
         # Preprocess image
         img = Image.open(io.BytesIO(file.read())).convert('RGB')
         img = img.resize((150, 150))  # Match your model input size
@@ -98,7 +99,7 @@ def classify():
     except Exception as e:
         logging.error(f"Error during classification: {e}", exc_info=True)
         return jsonify({"error": f"Error during classification: {e}"}), 500
-
+    
 # Pillow check endpoint (at root level, NOT inside classify)
 @app.route('/check_pillow', methods=['GET'])
 def check_pillow():
@@ -108,3 +109,4 @@ def check_pillow():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5003))
     app.run(host="0.0.0.0", port=port)
+    
