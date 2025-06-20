@@ -3,7 +3,7 @@ flask-cors==3.0.10
 tensorflow==2.19.0
 numpy==1.26.4
 gunicorn==20.1.0
-Pillow
+Pillow==9.5.0
 gdown==4.7.1
 
 
