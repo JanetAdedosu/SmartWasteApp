@@ -6,6 +6,7 @@ from PIL import Image
 import logging
 import io
 import os
+import traceback
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +15,14 @@ logging.basicConfig(level=logging.INFO)
 
 # Load TFLite model
 MODEL_PATH = "model.tflite"  # Adjust path if needed
+
+logging.info(f"Starting model load check...")
+logging.info(f"Current working directory: {os.getcwd()}")
+logging.info(f"Looking for model file at: {MODEL_PATH}")
+
+if not os.path.isfile(MODEL_PATH):
+    logging.error(f"Model file NOT found at {MODEL_PATH}")
+
 interpreter = None
 model_loaded = False
 load_error = None
@@ -26,8 +35,8 @@ try:
     model_loaded = True
     logging.info("TFLite model loaded successfully.")
 except Exception as e:
-    load_error = str(e)
-    logging.error(f"Failed to load TFLite model: {e}")
+    load_error = str(e) + "\n" + traceback.format_exc()
+    logging.error(f"Failed to load TFLite model:\n{load_error}")
 
 # Health check endpoint
 @app.route('/health', methods=['GET'])
