@@ -16,7 +16,7 @@ COPY backend/ ./backend/
 
 # Copy the model file explicitly (if not already copied by previous COPY)
 # If your COPY backend/ already includes models/, you can omit this line
-COPY backend/models/waste_classification_model.h5 ./backend/models/waste_classification_model.h5
+#COPY backend/models/waste_classification_model.h5 ./backend/models/waste_classification_model.h5
 
 # Expose the port your app runs on
 EXPOSE 5003
