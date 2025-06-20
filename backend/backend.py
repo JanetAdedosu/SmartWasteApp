@@ -15,8 +15,13 @@ def download_model():
     os.makedirs(MODEL_DIR, exist_ok=True)
     if not os.path.exists(MODEL_PATH):
         print(f"📥 Downloading model from Google Drive...")
-        gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
-        print(f"✅ Model downloaded!")
+        success = gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
+        if success:
+            print(f"✅ Model downloaded!")
+        else:
+            print("❌ Failed to download model.")
+    else:
+        print("✅ Model already exists, skipping download.")
 
 print(f"🔄 Loading model from {MODEL_PATH} ...")
 download_model()
@@ -28,4 +33,4 @@ def home():
     return "Model is loaded and app is running."
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5002)
+    app.run(host="0.0.0.0", port=5003)
