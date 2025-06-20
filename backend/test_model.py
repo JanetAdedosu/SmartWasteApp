@@ -9,7 +9,7 @@ interpreter = tf.lite.Interpreter(model_path="/Users/janetadedosu/Desktop/Smart_
 interpreter.allocate_tensors()
 
 # Preprocess the image
-img = Image.open('dataset/DATASET/TRAIN/Plastic/R_1.jpg').resize((150, 150))
+img = Image.open('backend/dataset/DATASET/TRAIN/Plastic/R_1.jpg').resize((150, 150))
 img_array = np.expand_dims(np.array(img) / 255.0, axis=0).astype(np.float32)  # Normalize and ensure FLOAT32
 
 # Get input and output details
