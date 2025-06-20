@@ -21,7 +21,8 @@ except ImportError:
     pillow_installed = False
 
 # Load TFLite model
-MODEL_PATH = "model.tflite"  # Adjust path if needed
+MODEL_PATH = "backend/model.tflite"
+
 
 logging.info(f"Starting model load check...")
 logging.info(f"Current working directory: {os.getcwd()}")

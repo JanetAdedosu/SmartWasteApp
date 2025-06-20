@@ -21,6 +21,9 @@ RUN pip install -r requirements.txt
 # Copy backend code after dependencies to leverage Docker cache
 COPY backend/ ./backend/
 
+# Copy the model file into the working directory
+COPY model.tflite .
+
 # Expose the port the app will run on
 EXPOSE 5003
 
