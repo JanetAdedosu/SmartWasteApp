@@ -5,7 +5,7 @@ FROM python:3.9-buster
 WORKDIR /app
 
 # Copy only the model file explicitly
-COPY backend/models/waste_classification_model.h5 ./backend/models/waste_classification_model.h5
+#COPY backend/models/waste_classification_model.h5 ./backend/models/waste_classification_model.h5
 
 # Copy backend.py to /app for testing (optional)
 COPY backend/backend.py ./backend.py
