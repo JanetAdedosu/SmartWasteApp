@@ -15,4 +15,12 @@ __pycache__/
 .vscode/
 
 # macOS system files
-.DS_Store
+.DS_Stores
+
+# Ignore all .h5 model files
+*.h5
+
+# Optional: Ignore build and archive files/folders you mentioned
+build/
+backend/archive.zip
+smart_sorting_waste_app/ios_backup/build/
