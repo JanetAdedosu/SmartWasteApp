@@ -1,90 +1,87 @@
-import os
-import requests
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import tensorflow as tf
 import numpy as np
-from flask import Flask, request, jsonify
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 from PIL import Image
+import logging
 import io
+import os
 
 app = Flask(__name__)
+CORS(app)
 
-# === Model Config ===
-MODEL_DIR = './backend/models'
-MODEL_FILENAME = 'waste_classification_model.h5'
-MODEL_PATH = os.path.join(MODEL_DIR, MODEL_FILENAME)
-MODEL_URL = 'https://drive.google.com/uc?export=download&id=1mtsvwzWIwbdbYYWJ4KOCTkWx_lfQfKyM'
+logging.basicConfig(level=logging.INFO)
 
-# === Download the model if not found ===
-def download_model():
-    if not os.path.exists(MODEL_DIR):
-        os.makedirs(MODEL_DIR)
-    if not os.path.exists(MODEL_PATH):
-        print("🔽 Downloading model from Google Drive...")
-        response = requests.get(MODEL_URL)
-        if response.status_code == 200:
-            with open(MODEL_PATH, 'wb') as f:
-                f.write(response.content)
-            print("✅ Model downloaded to", MODEL_PATH)
-        else:
-            raise RuntimeError(f"❌ Failed to download model: {response.status_code}")
+# Load TFLite model
+MODEL_PATH = "model.tflite"  # Adjust path if needed
+interpreter = None
+model_loaded = False
+load_error = None
 
-# === Load the model ===
-print(f"🔄 Checking model at {MODEL_PATH} ...")
 try:
-    download_model()
-    model = load_model(MODEL_PATH)
-    print("✅ Model loaded successfully!")
+    interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+    interpreter.allocate_tensors()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
     model_loaded = True
+    logging.info("TFLite model loaded successfully.")
 except Exception as e:
-    print(f"❌ Failed to load model: {e}")
-    model_loaded = False
+    load_error = str(e)
+    logging.error(f"Failed to load TFLite model: {e}")
 
-# === Routes ===
-@app.route('/')
-def home():
-    return "Model is loaded and app is running."
-
-@app.route('/health')
+# Health check endpoint
+@app.route('/health', methods=['GET'])
 def health():
-    return jsonify({
-        "status": "ok" if model_loaded else "error",
-        "model_loaded": model_loaded
-    })
+    if model_loaded:
+        return jsonify({"model_loaded": True, "status": "ok"})
+    else:
+        return jsonify({"model_loaded": False, "status": "error", "error": load_error})
 
+# Classify endpoint
 @app.route('/classify', methods=['POST'])
 def classify():
     if not model_loaded:
-        return jsonify({"error": "Model is not loaded"}), 500
+        return jsonify({"error": "Model not loaded"}), 500
 
     if 'image' not in request.files:
-        return jsonify({"error": "No image part in the request"}), 400
+        return jsonify({"error": "No image provided"}), 400
 
     file = request.files['image']
     if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
+        return jsonify({"error": "Empty filename"}), 400
 
     try:
-        img = Image.open(io.BytesIO(file.read()))
-        img = img.resize((224, 224))  # Adjust to match model input
-        img_array = np.array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+        # Preprocess image
+        img = Image.open(io.BytesIO(file.read())).convert('RGB')
+        img = img.resize((150, 150))  # Match your model input size
+        img_array = np.expand_dims(np.array(img) / 255.0, axis=0).astype(np.float32)
 
-        predictions = model.predict(img_array)
-        class_idx = np.argmax(predictions)
+        # Run inference
+        interpreter.set_tensor(input_details[0]['index'], img_array)
+        interpreter.invoke()
+        predictions = interpreter.get_tensor(output_details[0]['index'])
+
+        class_idx = int(np.argmax(predictions[0]))
         confidence = float(predictions[0][class_idx])
 
-        class_labels = ["Organic", "Plastic", "Paper", "Glass", "Other"]
-        predicted_class = class_labels[class_idx]
+        class_labels = {
+            0: "Organic",
+            1: "Recyclable",
+            2: "Non-Recyclable",
+            3: "Plastic"
+        }
+
+        predicted_class = class_labels.get(class_idx, "Unknown")
 
         return jsonify({
             "class": predicted_class,
             "confidence": confidence
         })
+
     except Exception as e:
+        logging.error(f"Error during classification: {e}", exc_info=True)
         return jsonify({"error": f"Error during classification: {e}"}), 500
 
-# === Run the app ===
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5003))  # Use environment port (for Render)
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5003))
     app.run(host="0.0.0.0", port=port)
