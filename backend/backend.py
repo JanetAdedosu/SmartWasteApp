@@ -13,6 +13,13 @@ CORS(app)
 
 logging.basicConfig(level=logging.INFO)
 
+# Check if Pillow is installed (this will always be True if this script runs successfully)
+try:
+    from PIL import Image
+    pillow_installed = True
+except ImportError:
+    pillow_installed = False
+
 # Load TFLite model
 MODEL_PATH = "model.tflite"  # Adjust path if needed
 
@@ -90,6 +97,12 @@ def classify():
     except Exception as e:
         logging.error(f"Error during classification: {e}", exc_info=True)
         return jsonify({"error": f"Error during classification: {e}"}), 500
+
+# Pillow check endpoint (at root level, NOT inside classify)
+@app.route('/check_pillow', methods=['GET'])
+def check_pillow():
+    return jsonify({"pillow_installed": pillow_installed})
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5003))
