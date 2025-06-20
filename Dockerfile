@@ -4,20 +4,26 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy all backend files into the container
-COPY backend/ ./backend/
+# Copy requirements.txt first
+COPY requirements.txt .
 
-# Install system-level dependencies
+# Install system-level dependencies needed to build packages (e.g., Pillow)
 RUN apt-get update && apt-get install -y \
     build-essential \
+    libjpeg-dev \
+    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install required Python packages
+# Upgrade pip and install required Python packages from requirements.txt
 RUN pip install --upgrade pip
-RUN pip install flask flask-cors gunicorn tensorflow-cpu
+RUN pip install -r requirements.txt
+
+# Copy backend code after dependencies to leverage Docker cache
+COPY backend/ ./backend/
 
 # Expose the port the app will run on
 EXPOSE 5003
 
 # Start the app using Gunicorn on port 5003
 CMD ["gunicorn", "backend.backend:app", "-b", "0.0.0.0:5003"]
+
