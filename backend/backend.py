@@ -1,6 +1,6 @@
 import os
+from flask import Flask, jsonify
 from tensorflow.keras.models import load_model
-from flask import Flask
 
 app = Flask(__name__)
 
@@ -22,6 +22,14 @@ print("✅ Model loaded successfully!")
 @app.route('/')
 def home():
     return "Model is loaded and app is running."
+
+@app.route('/health')
+def health():
+    try:
+        # Just confirming the model is loaded
+        return jsonify({"status": "ok", "model_loaded": True})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5003)
