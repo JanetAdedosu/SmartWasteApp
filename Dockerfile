@@ -1,24 +1,25 @@
+# Use an official Python runtime as a parent image
 FROM python:3.9-buster
 
-
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set working directory to /app (one level above backend)
+# Set working directory in the container
 WORKDIR /app
 
-# Copy requirements and install them
+# Copy requirements first to leverage Docker cache
 COPY backend/requirements.txt .
 
+# Upgrade pip and install dependencies
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend folder including your models folder and all code
+# Copy backend source code
 COPY backend/ ./backend/
 
-# Expose port 5003
+# Copy the model file explicitly (if not already copied by previous COPY)
+# If your COPY backend/ already includes models/, you can omit this line
+COPY backend/models/waste_classification_model.h5 ./backend/models/waste_classification_model.h5
+
+# Expose the port your app runs on
 EXPOSE 5003
 
-# Run the app with gunicorn, specifying the module as backend.backend:app
+# Command to run your app with Gunicorn or whatever you use
 CMD ["gunicorn", "--bind", "0.0.0.0:5003", "backend.backend:app"]
