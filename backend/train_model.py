@@ -5,9 +5,13 @@ from tensorflow.keras import layers, models
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 # Define dataset paths
-dataset_dir = "dataset/DATASET"
-train_dir = "dataset/DATASET/TRAIN"
-test_dir = "dataset/DATASET/TEST"
+# dataset_dir = "dataset/DATASET"
+# train_dir = "dataset/DATASET/TRAIN"
+# test_dir = "dataset/DATASET/TEST"
+dataset_dir = "backend/dataset/DATASET"
+train_dir = "backend/dataset/DATASET/TRAIN"
+test_dir = "backend/dataset/DATASET/TEST"
+
 
 #train_dir = os.path.join(dataset_dir, "TRAIN")
 #test_dir = os.path.join(dataset_dir, "TEST")
