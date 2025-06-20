@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class ModelInference {
   // API URL: Update this to your actual backend URL (if it's deployed)
-  //final String apiUrl = 'http://192.168.178.22:5003/classify'; // Updated to production URL
+  final String apiUrl = 'https://smartwasteapp-53.onrender.com/classify'; // Updated to production URL
 
   // Function to run inference on the image
   Future<String> runModelOnImage(String imagePath) async {
@@ -18,7 +18,8 @@ class ModelInference {
       var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
 
       // Add image file to request
-      request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+      //request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+      request.files.add(await http.MultipartFile.fromPath('file', imagePath));
 
       // Send the request with a timeout of 15 seconds (in case of large image uploads)
       final streamedResponse = await request.send().timeout(const Duration(seconds: 15));
