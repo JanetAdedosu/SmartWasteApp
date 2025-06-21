@@ -70,7 +70,9 @@ def health():
 def classify():
     try:
         # Get file from request
-        file = request.files['file']
+        #file = request.files['file']
+        file = request.files['image']
+
         
         # Preprocess image
         img = Image.open(io.BytesIO(file.read())).convert('RGB')
