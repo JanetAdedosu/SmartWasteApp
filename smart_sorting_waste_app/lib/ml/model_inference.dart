@@ -19,7 +19,9 @@ class ModelInference {
 
       // Add image file to request
       //request.files.add(await http.MultipartFile.fromPath('image', imagePath));
-      request.files.add(await http.MultipartFile.fromPath('file', imagePath));
+      //request.files.add(await http.MultipartFile.fromPath('file', imagePath));
+      request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+
 
       // Send the request with a timeout of 15 seconds (in case of large image uploads)
       final streamedResponse = await request.send().timeout(const Duration(seconds: 15));

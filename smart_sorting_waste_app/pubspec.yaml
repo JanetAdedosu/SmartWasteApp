@@ -1,5 +1,7 @@
 name: smart_waste_app
 description: Smart waste sorting via image and speech.
+version: 1.0.0+1
+
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
