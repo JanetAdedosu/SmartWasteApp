@@ -71,6 +71,7 @@ def classify():
     try:
         # Get file from request
         #file = request.files['file']
+        
         file = request.files['image']
 
         
