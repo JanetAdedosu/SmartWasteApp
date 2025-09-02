@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 # Load the retrained Keras model
-model = tf.keras.models.load_model('best_model.h5')
+model = tf.keras.models.load_model('best_model_v2.keras')
 
 # Convert the Keras model to TFLite format
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
