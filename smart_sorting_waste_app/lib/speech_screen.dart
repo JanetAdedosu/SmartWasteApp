@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'ml/model_inference.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
 
 class SpeechScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -18,6 +20,8 @@ class SpeechScreen extends StatefulWidget {
   late CameraController _cameraController;
   late stt.SpeechToText _speech;
   late ModelInference _modelInference;
+  late FlutterTts _flutterTts;
+
 
   bool _isCameraInitialized = false;
   bool _isListening = false;
@@ -30,6 +34,23 @@ void initState() {
   super.initState();
   _speech = stt.SpeechToText();
   _modelInference = ModelInference();
+
+  _flutterTts = FlutterTts();  // *** initialize TTS ***
+
+  // // *** Set TTS voice to Karen if available ***
+  //   _flutterTts.setLanguage('en-AU');
+  //   _flutterTts.setVoice({
+  //     'name': 'Karen',
+  //     'locale': 'en-AU',
+  //   });
+  _flutterTts.setLanguage('de-DE'); // German locale
+_flutterTts.setVoice({
+  'name': 'Anna',
+  'locale': 'de-DE',
+});
+
+
+  
   _initializeCamera();
 }
 
@@ -39,6 +60,8 @@ void dispose() {
   _cameraController.dispose();
   _speech.stop();
   _modelInference.close();
+
+  _flutterTts.stop();  // *** dispose TTS ***
   super.dispose();
 }
 
@@ -104,6 +127,9 @@ Future<void> _takePictureAndClassify() async {
       _classificationResult = result;
       _isProcessingImage = false;
     });
+
+    await _flutterTts.speak("Classification result is: $result");  // *** TTS speaks result ***
+
   } catch (e) {
     print('Error: $e');
     setState(() {

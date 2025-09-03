@@ -1,3 +1,4 @@
 Organic
 Recycable
 Plastic
+Non-Recycable
