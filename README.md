@@ -52,4 +52,33 @@ Visual Studio Code (VS Code) – Source code editor
 
 ## 📂 Project Structure
 
+smart_sorting_waste_app/
+│
+├── backend/                             # Python backend
+│   ├── dataset/                         # Dataset for training/testing
+│   │   └── DATASET/TRAIN/...            # Organized training images
+│   ├── models/                          # Saved training models (if not root)
+│   ├── best_model.h5                    # Trained Keras model
+│   ├── model.tflite                     # Converted TFLite model for mobile
+│   ├── class_indices.json               # Mapping of class labels to indices
+│   ├── convert_to_tflite.py             # Script to convert .h5 to .tflite
+│   ├── train_model.py                   # Model training script
+│   ├── test_model.py                    # Model test script
+│   ├── requirements.txt                 # Python dependencies
+│   └── app.py or backend.py             # Optional backend API (Flask/FastAPI)
+│
+├── smart_sorting_waste_app/            # Flutter app (main frontend)
+│   ├── lib/
+│   │   └── main.dart                    # Flutter entry point
+│   ├── ios/                             # iOS-specific code
+│   ├── android/                         # Android-specific code
+│   ├── assets/                          # Image assets, .tflite model, labels
+│   │   ├── model.tflite
+│   │   └── labels.txt
+│   ├── pubspec.yaml                     # Flutter dependencies and metadata
+│   └── build/                           # Auto-generated build files
+│
+├── README.md                            # Project overview and instructions
+└── .gitignore                           # Files and folders to ignore in Git
 
+#janetadeola the red one
